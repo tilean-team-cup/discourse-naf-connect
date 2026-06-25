@@ -1,0 +1,9 @@
+en:
+  naf_connect:
+    success: "NAF account connected! Welcome, %{name}."
+    errors:
+      state_mismatch: "Security error: invalid state parameter."
+      no_code: "No code received from NAF."
+      token_failed: "Could not obtain access token from NAF."
+      user_info_failed: "Could not retrieve user data from NAF."
+      already_linked: "This NAF account is already linked to another user."
