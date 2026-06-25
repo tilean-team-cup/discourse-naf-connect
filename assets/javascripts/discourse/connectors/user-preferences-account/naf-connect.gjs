@@ -30,11 +30,6 @@ export default class NafConnect extends Component {
   }
 
   @action
-  connectNaf() {
-    window.location.href = "/naf/connect";
-  }
-
-  @action
   async disconnectNaf() {
     try {
       await ajax("/naf/disconnect", { type: "DELETE" });
@@ -66,12 +61,10 @@ export default class NafConnect extends Component {
             </button>
           </div>
         {{else}}
-          <button
-            class="btn btn-primary"
-            {{on "click" this.connectNaf}}
-          >
+          {{! Link <a> diretto per bypassare il router Ember e forzare una navigazione reale }}
+          <a href="/naf/connect" class="btn btn-primary" rel="nofollow">
             Collega Account NAF
-          </button>
+          </a>
           <p class="hint">
             Collega il tuo account NAF per accedere al forum con le credenziali NAF.
             Il tuo nome coach verrà sincronizzato automaticamente.
