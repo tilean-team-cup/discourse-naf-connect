@@ -13,10 +13,10 @@ export default class NafConnect extends Component {
 
   constructor(owner, args) {
     super(owner, args);
-    this.#loadStatus();
+    this.loadStatus();
   }
 
-  async #loadStatus() {
+  async loadStatus() {
     try {
       const data = await ajax("/naf/status");
       this.connected = data.connected;
