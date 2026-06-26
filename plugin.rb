@@ -152,6 +152,19 @@ after_initialize do
     end
   end
 
+  # Espone naf_id e naf_name nel serializer utente (profilo pubblico)
+  add_to_serializer(:user, :naf_id) do
+    UserAssociatedAccount
+      .find_by(provider_name: "oauth2_basic", user_id: object.id)
+      &.provider_uid
+  end
+
+  add_to_serializer(:user, :naf_name) do
+    UserAssociatedAccount
+      .find_by(provider_name: "oauth2_basic", user_id: object.id)
+      &.info&.dig("name")
+  end
+
   Discourse::Application.routes.prepend do
     get    "/naf/auth_url"   => "naf_connect#auth_url"
     get    "/naf/callback"   => "naf_connect#callback"
