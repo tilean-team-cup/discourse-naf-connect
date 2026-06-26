@@ -57,19 +57,20 @@ after_initialize do
   class ::NafConnectController < ::ApplicationController
     requires_login
 
-    def initiate
+    # Chiamato via AJAX: salva lo state in sessione e restituisce l'URL NAF
+    # Il JS poi naviga direttamente verso il dominio esterno (Ember non intercetta)
+    def auth_url
       state = SecureRandom.hex(24)
       session[:naf_state] = state
 
-      params = {
+      query = {
         client_id:     SiteSetting.oauth2_client_id,
         redirect_uri:  callback_url,
         response_type: "code",
         state:         state
       }.map { |k, v| "#{k}=#{ERB::Util.url_encode(v)}" }.join("&")
 
-      redirect_to "#{NafConnect::NAF_BASE}/index.php?module=NAF&type=oauth&#{params}",
-                  allow_other_host: true
+      render json: { url: "#{NafConnect::NAF_BASE}/index.php?module=NAF&type=oauth&#{query}" }
     end
 
     def callback
@@ -152,7 +153,7 @@ after_initialize do
   end
 
   Discourse::Application.routes.prepend do
-    get    "/naf/connect"    => "naf_connect#initiate"
+    get    "/naf/auth_url"   => "naf_connect#auth_url"
     get    "/naf/callback"   => "naf_connect#callback"
     get    "/naf/status"     => "naf_connect#status"
     delete "/naf/disconnect" => "naf_connect#disconnect"

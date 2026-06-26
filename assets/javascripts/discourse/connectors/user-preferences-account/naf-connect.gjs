@@ -4,7 +4,6 @@ import { action } from "@ember/object";
 import { on } from "@ember/modifier";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import DiscourseURL from "discourse/lib/url";
 
 export default class NafConnect extends Component {
   @tracked loading = true;
@@ -31,8 +30,15 @@ export default class NafConnect extends Component {
   }
 
   @action
-  connectNaf() {
-    DiscourseURL.redirectTo("/naf/connect");
+  async connectNaf() {
+    try {
+      // AJAX per ottenere l'URL NAF (salva lo state in sessione lato server)
+      // poi navighiamo direttamente verso il dominio esterno: Ember non intercetta URL esterni
+      const { url } = await ajax("/naf/auth_url");
+      window.location.replace(url);
+    } catch (e) {
+      popupAjaxError(e);
+    }
   }
 
   @action
