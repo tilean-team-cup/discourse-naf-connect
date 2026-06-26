@@ -4,6 +4,7 @@ import { action } from "@ember/object";
 import { on } from "@ember/modifier";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
+import DiscourseURL from "discourse/lib/url";
 
 export default class NafConnect extends Component {
   @tracked loading = true;
@@ -27,6 +28,11 @@ export default class NafConnect extends Component {
     } finally {
       this.loading = false;
     }
+  }
+
+  @action
+  connectNaf() {
+    DiscourseURL.redirectTo("/naf/connect");
   }
 
   @action
@@ -61,10 +67,9 @@ export default class NafConnect extends Component {
             </button>
           </div>
         {{else}}
-          {{! Link <a> diretto per bypassare il router Ember e forzare una navigazione reale }}
-          <a href="/naf/connect" class="btn btn-primary" rel="nofollow">
+          <button class="btn btn-primary" {{on "click" this.connectNaf}}>
             Collega Account NAF
-          </a>
+          </button>
           <p class="hint">
             Collega il tuo account NAF per accedere al forum con le credenziali NAF.
             Il tuo nome coach verrà sincronizzato automaticamente.
